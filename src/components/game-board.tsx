@@ -8,7 +8,7 @@ import { PlayerScores } from './player-scores';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Confetti } from 'lucide-react';
+import { PartyPopper } from 'lucide-react'; // Changed from Confetti to PartyPopper
 
 interface GameBoardProps {
   settings: GameSettingsType;
@@ -164,7 +164,7 @@ export function GameBoard({ settings, onPlayAgain }: GameBoardProps) {
             <AlertDialogContent>
                 <AlertDialogHeader>
                 <AlertDialogTitle className="text-2xl text-center flex items-center justify-center gap-2">
-                    <Confetti className="text-yellow-400" size={32} /> Game Over! <Confetti className="text-yellow-400" size={32} />
+                    <PartyPopper className="text-yellow-400" size={32} /> Game Over! <PartyPopper className="text-yellow-400" size={32} />
                 </AlertDialogTitle>
                 <AlertDialogDescription className="text-lg text-center py-4">
                     {winner && Array.isArray(winner) && winner.length > 1 
