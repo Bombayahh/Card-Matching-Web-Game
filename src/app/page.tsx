@@ -72,7 +72,7 @@ export default function MatchUpMemoryPage() {
           <GameSetup onStartGame={handleStartGame} />
         ) : (
           <div className="w-full flex flex-col md:flex-row gap-4 lg:gap-6">
-            <aside className="w-full md:w-64 lg:w-72 md:sticky md:top-24 self-start"> {/* Adjusted width and sticky positioning */}
+            <aside className="w-full md:w-48 lg:w-56 md:sticky md:top-24 self-start"> {/* Adjusted width */}
               <PlayerScores players={players} currentPlayerId={currentPlayerId} />
             </aside>
             <section className="flex-grow">

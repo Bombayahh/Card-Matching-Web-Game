@@ -39,11 +39,11 @@ export function MemoryCard({ card, onCardClick, disabled }: MemoryCardProps) {
       <div className="card-inner">
         <div className="card-face card-front">
           {/* Content for the front of the card (visible initially, card back) */}
-          <Shapes size={48} strokeWidth={1.5} />
+          <Shapes size={64} strokeWidth={1.5} /> {/* Increased icon size */}
         </div>
         <div className="card-face card-back">
           {/* Content for the back of the card (visible after flip, card face) */}
-          <Icon size={48} strokeWidth={1.5} />
+          <Icon size={64} strokeWidth={1.5} /> {/* Increased icon size */}
         </div>
       </div>
     </ShadcnCard>

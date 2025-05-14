@@ -22,27 +22,23 @@ export function PlayerScores({ players, currentPlayerId }: PlayerScoresProps) {
       <h2 className="text-xl font-semibold mb-3 text-center text-foreground">Player Scores</h2>
       <div className={cn(
         "grid grid-cols-1 gap-3", 
-        // Simpler grid logic for sidebar: always 1 column.
-        // If more than 2 players, can adjust based on available space or keep single column for consistency.
-        // For a narrow sidebar, 1 column is usually best.
-        // players.length > 2 && "sm:grid-cols-2 md:grid-cols-1" // Example if you want 2 cols on sm for 3+ players
         )}>
         {players.map((player) => (
           <Card
             key={player.id}
             className={cn(
-              'transition-all duration-300 ease-in-out shadow-md', // Reduced shadow
+              'transition-all duration-300 ease-in-out shadow-md',
               player.id === currentPlayerId ? 'border-primary ring-2 ring-primary scale-105 bg-primary/10' : 'bg-card'
             )}
           >
-            <CardHeader className="p-3"> {/* Reduced padding */}
-              <CardTitle className="text-md text-center"> {/* Reduced text size */}
+            <CardHeader className="p-2.5"> {/* Reduced padding */}
+              <CardTitle className="text-base text-center"> {/* Adjusted text size */}
                 {player.name}
-                {player.id === currentPlayerId && <span className="block text-xs mt-1">(Current Turn)</span>} {/* Block for better layout */}
+                {player.id === currentPlayerId && <span className="block text-xs mt-1">(Current Turn)</span>}
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3 pt-0"> {/* Reduced padding */}
-              <p className="text-2xl font-bold text-center text-primary">{player.score}</p> {/* Reduced text size */}
+            <CardContent className="p-2.5 pt-0"> {/* Reduced padding */}
+              <p className="text-xl font-bold text-center text-primary">{player.score}</p> {/* Adjusted text size */}
             </CardContent>
           </Card>
         ))}

@@ -4,17 +4,16 @@ import { useState, useEffect, useCallback } from 'react';
 import type { CardType, PlayerType, GameSettingsType } from '@/types';
 import { generateCardSet, getGridColsClass } from '@/lib/game-utils';
 import { MemoryCard } from './memory-card';
-// PlayerScores is no longer rendered here
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { PartyPopper } from 'lucide-react';
 
 interface GameBoardProps {
   settings: GameSettingsType;
-  players: PlayerType[]; // Received as prop
-  currentPlayerId: number; // Received as prop
-  onPlayerScored: (playerId: number) => void; // Callback to update score
-  onNextPlayerTurn: () => void; // Callback to change turn
+  players: PlayerType[]; 
+  currentPlayerId: number; 
+  onPlayerScored: (playerId: number) => void; 
+  onNextPlayerTurn: () => void; 
   onPlayAgain: () => void;
 }
 
@@ -29,9 +28,7 @@ export function GameBoard({ settings, players, currentPlayerId, onPlayerScored, 
   const { toast } = useToast();
 
   useEffect(() => {
-    // Initialize game cards
     setCards(generateCardSet(settings.numPairs));
-    // Player initialization and initial toast are now handled in page.tsx
     setFlippedCards([]);
     setIsChecking(false);
     setGameStatus('playing');
@@ -57,13 +54,12 @@ export function GameBoard({ settings, players, currentPlayerId, onPlayerScored, 
       const [firstCard, secondCard] = flippedCards;
 
       if (firstCard.pairId === secondCard.pairId) {
-        // Match found
         setCards((prevCards) =>
           prevCards.map((card) =>
             card.pairId === firstCard.pairId ? { ...card, isMatched: true, isFlipped: true } : card
           )
         );
-        onPlayerScored(currentPlayerId); // Call prop to update score
+        onPlayerScored(currentPlayerId); 
         
         toast({
           title: "Match Found!",
@@ -74,7 +70,6 @@ export function GameBoard({ settings, players, currentPlayerId, onPlayerScored, 
         setIsChecking(false);
         
       } else {
-        // No match
         toast({
           title: "No Match!",
           description: "Try again.",
@@ -82,7 +77,7 @@ export function GameBoard({ settings, players, currentPlayerId, onPlayerScored, 
         });
         setTimeout(() => {
           resetFlippedCards();
-          onNextPlayerTurn(); // Call prop to change turn (and trigger toast in page.tsx)
+          onNextPlayerTurn(); 
         }, 1200); 
       }
     }
@@ -123,15 +118,13 @@ export function GameBoard({ settings, players, currentPlayerId, onPlayerScored, 
 
   const gridColsClass = getGridColsClass(cards.length);
 
-  if (!cards.length) { // players.length check removed as it's managed by page.tsx
+  if (!cards.length) {
     return <p className="text-xl text-center">Loading game cards...</p>;
   }
 
   return (
     <div className="w-full flex flex-col items-center">
-      {/* PlayerScores component is now rendered in page.tsx */}
-      
-      <div className={`card-grid ${gridColsClass} w-full max-w-4xl mb-8`}> {/* max-w increased slightly */}
+      <div className={`card-grid ${gridColsClass} w-full max-w-5xl mb-8`}> {/* max-w increased */}
         {cards.map((card) => (
           <MemoryCard
             key={card.id}
