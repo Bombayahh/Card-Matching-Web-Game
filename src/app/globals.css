@@ -8,73 +8,93 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --background: 125 40% 75%; /* Soft Green */
+    --foreground: 120 25% 20%; /* Dark Green */
+
+    --card: 53 75% 92%; /* Pale Yellow */
+    --card-foreground: 50 25% 25%; /* Darker yellow/brown */
+
+    --popover: 53 75% 92%; /* Pale Yellow */
+    --popover-foreground: 50 25% 25%; /* Darker yellow/brown */
+
+    --primary: 197 55% 80%; /* Sky Blue */
+    --primary-foreground: 197 30% 20%; /* Darker Blue */
+
+    --secondary: 125 30% 85%; /* Lighter Soft Green */
+    --secondary-foreground: 120 25% 20%; /* Dark Green */
+
+    --muted: 125 30% 88%; /* Even Lighter Soft Green */
+    --muted-foreground: 120 25% 45%; /* Medium Green */
+
+    --accent: 197 65% 70%; /* More vibrant Sky Blue */
+    --accent-foreground: 197 30% 15%; /* Darkest Blue */
+
+    --destructive: 0 70% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 125 25% 65%; /* Slightly darker/muted green */
+    --input: 125 30% 90%; /* Very light green for inputs */
+    --ring: 197 55% 75%; /* Sky Blue */
+
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Chart colors - update if charts are used, for now matching theme */
+    --chart-1: 197 55% 80%;
+    --chart-2: 125 40% 75%;
+    --chart-3: 53 75% 92%;
+    --chart-4: 197 65% 70%;
+    --chart-5: 125 30% 85%;
+    
+    /* Sidebar colors - align with main theme */
+    --sidebar-background: 125 40% 72%;
+    --sidebar-foreground: 120 25% 15%;
+    --sidebar-primary: 197 55% 75%;
+    --sidebar-primary-foreground: 197 30% 15%;
+    --sidebar-accent: 197 65% 65%;
+    --sidebar-accent-foreground: 197 30% 10%;
+    --sidebar-border: 125 25% 60%;
+    --sidebar-ring: 197 55% 70%;
   }
+
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Define dark theme if needed, for now copying light theme and adjusting values slightly darker */
+    --background: 125 40% 15%; 
+    --foreground: 120 25% 80%; 
+
+    --card: 53 75% 20%; 
+    --card-foreground: 50 25% 85%; 
+
+    --popover: 53 75% 20%; 
+    --popover-foreground: 50 25% 85%; 
+
+    --primary: 197 55% 40%; 
+    --primary-foreground: 197 30% 90%; 
+
+    --secondary: 125 30% 25%; 
+    --secondary-foreground: 120 25% 80%; 
+
+    --muted: 125 30% 22%; 
+    --muted-foreground: 120 25% 65%;
+
+    --accent: 197 65% 50%; 
+    --accent-foreground: 197 30% 95%; 
+
+    --destructive: 0 70% 40%;
+    --destructive-foreground: 0 0% 90%;
+
+    --border: 125 25% 30%; 
+    --input: 125 30% 20%; 
+    --ring: 197 55% 55%;
+
+    /* Sidebar dark theme colors */
+    --sidebar-background: 125 40% 12%;
+    --sidebar-foreground: 120 25% 85%;
+    --sidebar-primary: 197 55% 35%;
+    --sidebar-primary-foreground: 197 30% 95%;
+    --sidebar-accent: 197 65% 45%;
+    --sidebar-accent-foreground: 197 30% 90%;
+    --sidebar-border: 125 25% 25%;
+    --sidebar-ring: 197 55% 50%;
   }
 }
 
@@ -84,5 +104,82 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-geist-sans);
   }
+}
+
+/* Card flip animation styles */
+.perspective {
+  perspective: 1000px;
+}
+
+.card-container {
+  transition: transform 0.2s;
+}
+.card-container:hover:not([data-matched="true"]):not([data-disabled="true"]) {
+  transform: translateY(-5px) scale(1.03);
+}
+
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card-flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: inherit; /* inherits from parent Card component */
+}
+
+.card-front {
+  background-color: hsl(var(--secondary)); /* Lighter Soft Green */
+  color: hsl(var(--secondary-foreground)); /* Dark Green */
+}
+.card-front svg { /* Default color for pattern on back of card */
+    color: hsl(var(--muted-foreground));
+}
+
+
+.card-back {
+  background-color: hsl(var(--card)); /* Pale Yellow */
+  color: hsl(var(--card-foreground)); /* Darker yellow/brown */
+  transform: rotateY(180deg);
+}
+
+/* Matched card style */
+.card-matched {
+  /* border-color: hsl(var(--accent)) !important; /* Using !important to override base border */
+  /* box-shadow: 0 0 0 3px hsl(var(--accent) / 0.7); */
+  opacity: 0.7;
+  /* transform: scale(0.95); */
+}
+.card-matched .card-inner {
+  /* transform: rotateY(180deg) scale(0.95); */
+   transform: rotateY(180deg); /* Keep it flipped */
+}
+
+.card-matched .card-back {
+   border: 3px solid hsl(var(--accent));
+}
+
+
+/* Grid styling */
+.card-grid {
+  display: grid;
+  gap: 1rem; /* Or use Tailwind gap classes */
 }
