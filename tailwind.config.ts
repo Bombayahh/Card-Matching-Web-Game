@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -15,6 +16,8 @@ export default {
     'grid-cols-8',
     'grid-cols-9',
     'grid-cols-10',
+    'grid-cols-11', // Added for flexibility, though current logic might not use it
+    'grid-cols-12', // Added for 24 pairs (48 cards)
   ],
   theme: {
   	extend: {

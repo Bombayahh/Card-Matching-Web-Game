@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -27,7 +28,10 @@ const pairOptions = [
     { value: 10, label: "10 Pairs" },
     { value: 12, label: "12 Pairs (Hard)" },
     { value: 15, label: "15 Pairs" },
-    { value: 18, label: "18 Pairs (Expert)" }
+    { value: 18, label: "18 Pairs (Expert)" },
+    { value: 21, label: "21 Pairs (Challenging)" },
+    { value: 24, label: "24 Pairs (Extreme)" },
+    { value: 25, label: "25 Pairs (Ultimate)" },
 ];
 
 

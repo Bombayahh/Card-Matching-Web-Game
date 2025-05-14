@@ -1,3 +1,4 @@
+
 import type { CardType } from '@/types';
 import { gameIconsList } from '@/components/icons';
 import { HelpCircle } from 'lucide-react'; // Default icon if not enough unique icons
@@ -47,14 +48,19 @@ export function generateCardSet(numPairs: number): CardType[] {
 }
 
 export const getGridColsClass = (numCards: number): string => {
-  // numPairs options: 4,  6,  8,  10, 12, 15, 18
-  // numCards:       8, 12, 16, 20, 24, 30, 36
-  if (numCards <= 8) return 'grid-cols-4';   // 4x2 for 8 cards (4 pairs)
-  if (numCards <= 12) return 'grid-cols-6';  // 6x2 for 12 cards (6 pairs)
-  if (numCards <= 16) return 'grid-cols-8';  // 8x2 for 16 cards (8 pairs)
-  if (numCards <= 20) return 'grid-cols-7';  // ~7x3 for 20 cards (10 pairs), results in 20/7 -> 3 rows
-  if (numCards <= 24) return 'grid-cols-8';  // 8x3 for 24 cards (12 pairs)
-  if (numCards <= 30) return 'grid-cols-10'; // 10x3 for 30 cards (15 pairs)
-  if (numCards <= 36) return 'grid-cols-9';  // 9x4 for 36 cards (18 pairs)
-  return 'grid-cols-8'; // Default, though settings should hit one of above
+  // numPairs options: 4,  6,  8,  10, 12, 15, 18, 21, 24, 25
+  // numCards:       8, 12, 16, 20, 24, 30, 36, 42, 48, 50
+
+  if (numCards <= 8) return 'grid-cols-4';    // 4 pairs (8 cards): 4x2
+  if (numCards <= 12) return 'grid-cols-6';   // 6 pairs (12 cards): 6x2
+  if (numCards <= 16) return 'grid-cols-8';   // 8 pairs (16 cards): 8x2
+  if (numCards <= 20) return 'grid-cols-10';  // 10 pairs (20 cards): 10x2
+  if (numCards <= 24) return 'grid-cols-8';   // 12 pairs (24 cards): 8x3
+  if (numCards <= 30) return 'grid-cols-10';  // 15 pairs (30 cards): 10x3
+  if (numCards <= 36) return 'grid-cols-9';   // 18 pairs (36 cards): 9x4
+  if (numCards <= 42) return 'grid-cols-7';   // 21 pairs (42 cards): 7x6
+  if (numCards <= 48) return 'grid-cols-12';  // 24 pairs (48 cards): 12x4
+  if (numCards <= 50) return 'grid-cols-10';  // 25 pairs (50 cards): 10x5
+  
+  return 'grid-cols-10'; // Default for unexpected values (though settings should hit one of above)
 };
