@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { Separator } from '@/components/ui/separator';
 
 interface GameSetupProps {
   onStartGame: (settings: GameSettingsType) => void;
@@ -74,66 +75,85 @@ export function GameSetup({ onStartGame }: GameSetupProps) {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-xl">
+    <Card className="w-full max-w-2xl shadow-xl"> {/* Increased max-width for side panel */}
       <CardHeader>
         <CardTitle className="text-3xl text-center">Game Setup</CardTitle>
         <CardDescription className="text-center">Customize your game!</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="numPlayers" className="text-lg">Number of Players</Label>
-            <Select
-              value={String(numPlayers)}
-              onValueChange={(value) => setNumPlayers(Number(value))}
-            >
-              <SelectTrigger id="numPlayers" className="w-full text-base">
-                <SelectValue placeholder="Select number of players" />
-              </SelectTrigger>
-              <SelectContent>
-                {playerOptions.map((num) => (
-                  <SelectItem key={num} value={String(num)} className="text-base">
-                    {num} Player{num > 1 ? 's' : ''}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        <CardContent className="space-y-0"> {/* Removed default space-y, will use flex gap */}
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+            {/* Main Settings Panel */}
+            <div className="flex-1 space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="numPlayers" className="text-lg">Number of Players</Label>
+                <Select
+                  value={String(numPlayers)}
+                  onValueChange={(value) => setNumPlayers(Number(value))}
+                >
+                  <SelectTrigger id="numPlayers" className="w-full text-base">
+                    <SelectValue placeholder="Select number of players" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {playerOptions.map((num) => (
+                      <SelectItem key={num} value={String(num)} className="text-base">
+                        {num} Player{num > 1 ? 's' : ''}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          {Array.from({ length: numPlayers }).map((_, index) => (
-            <div key={`player-name-${index}`} className="space-y-2">
-              <Label htmlFor={`playerName${index + 1}`} className="text-lg">Player {index + 1} Name</Label>
-              <Input
-                id={`playerName${index + 1}`}
-                value={playerNames[index] || ''}
-                onChange={(e) => handlePlayerNameChange(index, e.target.value)}
-                placeholder={`Enter name for Player ${index + 1}`}
-                className="w-full text-base"
-                required
-              />
+              <div className="space-y-2">
+                <Label htmlFor="numPairs" className="text-lg">Number of Card Pairs</Label>
+                <Select
+                  value={String(numPairs)}
+                  onValueChange={(value) => setNumPairs(Number(value))}
+                >
+                  <SelectTrigger id="numPairs" className="w-full text-base">
+                    <SelectValue placeholder="Select number of pairs" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {pairOptions.map((option) => (
+                      <SelectItem key={option.value} value={String(option.value)} className="text-base">
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          ))}
 
-          <div className="space-y-2">
-            <Label htmlFor="numPairs" className="text-lg">Number of Card Pairs</Label>
-            <Select
-              value={String(numPairs)}
-              onValueChange={(value) => setNumPairs(Number(value))}
-            >
-              <SelectTrigger id="numPairs" className="w-full text-base">
-                <SelectValue placeholder="Select number of pairs" />
-              </SelectTrigger>
-              <SelectContent>
-                {pairOptions.map((option) => (
-                  <SelectItem key={option.value} value={String(option.value)} className="text-base">
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Vertical Separator for md screens and up */}
+            <Separator orientation="vertical" className="hidden md:block h-auto" />
+            {/* Horizontal Separator for sm screens */}
+            <Separator orientation="horizontal" className="block md:hidden" />
+
+
+            {/* Player Names Side Panel */}
+            {numPlayers > 0 && (
+              <div className="md:w-64 space-y-4 flex-shrink-0"> {/* Fixed width for side panel on medium screens */}
+                <h3 className="text-lg font-medium text-center md:text-left">Player Names</h3>
+                <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                    {Array.from({ length: numPlayers }).map((_, index) => (
+                    <div key={`player-name-${index}`} className="space-y-1.5">
+                        <Label htmlFor={`playerName${index + 1}`} className="text-base">Player {index + 1}</Label>
+                        <Input
+                        id={`playerName${index + 1}`}
+                        value={playerNames[index] || ''}
+                        onChange={(e) => handlePlayerNameChange(index, e.target.value)}
+                        placeholder={`Name for Player ${index + 1}`}
+                        className="w-full text-base"
+                        required
+                        />
+                    </div>
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="pt-6"> {/* Add padding-top to footer */}
           <Button type="submit" className="w-full text-lg py-6">
             Start Game
           </Button>
