@@ -18,4 +18,5 @@ export interface PlayerType {
 export interface GameSettingsType {
   numPlayers: number;
   numPairs: number;
+  playerNames: string[];
 }

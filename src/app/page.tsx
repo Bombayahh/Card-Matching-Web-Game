@@ -17,12 +17,12 @@ export default function MatchUpMemoryPage() {
   const initializeGameStates = useCallback((settings: GameSettingsType) => {
     const initialPlayers = Array.from({ length: settings.numPlayers }, (_, i) => ({
       id: i + 1,
-      name: `Player ${i + 1}`,
+      name: settings.playerNames[i] || `Player ${i + 1}`, // Use provided names
       score: 0,
     }));
     setPlayers(initialPlayers);
     setCurrentPlayerId(1);
-    toast({ title: `Game Started!`, description: `Player 1's turn.` });
+    toast({ title: `Game Started!`, description: `${initialPlayers[0].name}'s turn.` });
   }, [toast]);
 
   const handleStartGame = (settings: GameSettingsType) => {
@@ -46,13 +46,14 @@ export default function MatchUpMemoryPage() {
   }, []);
 
   const handleNextPlayerTurn = useCallback(() => {
-    if (!gameSettings) return;
-    const nextPlayer = (currentPlayerId % gameSettings.numPlayers) + 1;
-    setCurrentPlayerId(nextPlayer);
+    if (!gameSettings || players.length === 0) return;
+    const nextPlayerIndex = currentPlayerId % gameSettings.numPlayers;
+    const nextPlayer = players[nextPlayerIndex];
+    setCurrentPlayerId(nextPlayer.id);
     toast({
-      title: `Player ${nextPlayer}'s Turn`
+      title: `${nextPlayer.name}'s Turn`
     });
-  }, [currentPlayerId, gameSettings, toast]);
+  }, [currentPlayerId, gameSettings, players, toast]);
 
 
   return (
@@ -72,7 +73,7 @@ export default function MatchUpMemoryPage() {
           <GameSetup onStartGame={handleStartGame} />
         ) : (
           <div className="w-full flex flex-col md:flex-row gap-4 lg:gap-6">
-            <aside className="w-full md:w-48 lg:w-56 md:sticky md:top-24 self-start"> {/* Adjusted width */}
+            <aside className="w-full md:w-48 lg:w-56 md:sticky md:top-24 self-start">
               <PlayerScores players={players} currentPlayerId={currentPlayerId} />
             </aside>
             <section className="flex-grow">

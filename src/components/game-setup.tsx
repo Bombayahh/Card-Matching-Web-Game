@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { GameSettingsType } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -19,22 +20,37 @@ interface GameSetupProps {
 }
 
 const playerOptions = [1, 2, 3, 4];
-// 8, 12, 16, 20, 24, 30, 36 cards
 const pairOptions = [
-    { value: 4, label: "4 Pairs (Easy)" }, // 8 cards
-    { value: 6, label: "6 Pairs" }, // 12 cards
-    { value: 8, label: "8 Pairs (Medium)" }, // 16 cards
-    { value: 10, label: "10 Pairs" }, // 20 cards
-    { value: 12, label: "12 Pairs (Hard)" }, // 24 cards
-    { value: 15, label: "15 Pairs" }, // 30 cards
-    { value: 18, label: "18 Pairs (Expert)" } // 36 cards
+    { value: 4, label: "4 Pairs (Easy)" },
+    { value: 6, label: "6 Pairs" },
+    { value: 8, label: "8 Pairs (Medium)" },
+    { value: 10, label: "10 Pairs" },
+    { value: 12, label: "12 Pairs (Hard)" },
+    { value: 15, label: "15 Pairs" },
+    { value: 18, label: "18 Pairs (Expert)" }
 ];
 
 
 export function GameSetup({ onStartGame }: GameSetupProps) {
   const [numPlayers, setNumPlayers] = useState<number>(1);
-  const [numPairs, setNumPairs] = useState<number>(8); // Default to Medium
+  const [numPairs, setNumPairs] = useState<number>(8);
+  const [playerNames, setPlayerNames] = useState<string[]>(['Player 1']);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setPlayerNames((prevNames) => {
+      const newNames = Array.from({ length: numPlayers }, (_, i) => prevNames[i] || `Player ${i + 1}`);
+      return newNames;
+    });
+  }, [numPlayers]);
+
+  const handlePlayerNameChange = (index: number, name: string) => {
+    setPlayerNames((prevNames) => {
+      const newNames = [...prevNames];
+      newNames[index] = name;
+      return newNames;
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +62,11 @@ export function GameSetup({ onStartGame }: GameSetupProps) {
         toast({ title: "Invalid pairs number", description: "Please select a valid number of pairs.", variant: "destructive" });
         return;
     }
-    onStartGame({ numPlayers, numPairs });
+    if (playerNames.some(name => name.trim() === '')) {
+        toast({ title: "Invalid player name", description: "Player names cannot be empty.", variant: "destructive" });
+        return;
+    }
+    onStartGame({ numPlayers, numPairs, playerNames });
   };
 
   return (
@@ -75,6 +95,20 @@ export function GameSetup({ onStartGame }: GameSetupProps) {
               </SelectContent>
             </Select>
           </div>
+
+          {Array.from({ length: numPlayers }).map((_, index) => (
+            <div key={`player-name-${index}`} className="space-y-2">
+              <Label htmlFor={`playerName${index + 1}`} className="text-lg">Player {index + 1} Name</Label>
+              <Input
+                id={`playerName${index + 1}`}
+                value={playerNames[index] || ''}
+                onChange={(e) => handlePlayerNameChange(index, e.target.value)}
+                placeholder={`Enter name for Player ${index + 1}`}
+                className="w-full text-base"
+                required
+              />
+            </div>
+          ))}
 
           <div className="space-y-2">
             <Label htmlFor="numPairs" className="text-lg">Number of Card Pairs</Label>
