@@ -15,8 +15,6 @@ export function shuffleArray<T>(array: T[]): T[] {
 export function generateCardSet(numPairs: number): CardType[] {
   if (numPairs > gameIconsList.length) {
     console.warn(`Requested ${numPairs} pairs, but only ${gameIconsList.length} unique icons available. Some cards might have default icons or duplicates if not handled.`);
-    // Potentially, you could repeat icons or use a default icon for missing ones.
-    // For this implementation, we'll slice, and if numPairs is too high, it will be limited by available icons.
   }
 
   const selectedIcons = shuffleArray(gameIconsList).slice(0, numPairs);
@@ -24,7 +22,6 @@ export function generateCardSet(numPairs: number): CardType[] {
   const cards: CardType[] = [];
   selectedIcons.forEach((iconInfo, index) => {
     const pairId = `pair-${index}`;
-    // Use iconInfo.component, or fallback if it's somehow undefined
     const IconComponent = iconInfo.component || HelpCircle; 
     const iconName = iconInfo.name || `unknown-${index}`;
 
@@ -50,14 +47,14 @@ export function generateCardSet(numPairs: number): CardType[] {
 }
 
 export const getGridColsClass = (numCards: number): string => {
-  if (numCards <= 8) return 'grid-cols-4'; // 4x2
-  if (numCards <= 12) return 'grid-cols-4'; // 4x3
-  if (numCards <= 16) return 'grid-cols-4'; // 4x4
-  if (numCards <= 20) return 'grid-cols-5'; // 5x4
-  if (numCards <= 24) return 'grid-cols-6'; // 6x4
-  if (numCards <= 30) return 'grid-cols-6'; // 6x5
-  if (numCards <= 36) return 'grid-cols-6'; // 6x6
-  if (numCards <= 42) return 'grid-cols-7'; // 7x6
-  if (numCards <= 48) return 'grid-cols-8'; // 8x6
-  return 'grid-cols-6'; // Default
+  // numPairs options: 4,  6,  8,  10, 12, 15, 18
+  // numCards:       8, 12, 16, 20, 24, 30, 36
+  if (numCards <= 8) return 'grid-cols-4';   // 4x2 for 8 cards (4 pairs)
+  if (numCards <= 12) return 'grid-cols-6';  // 6x2 for 12 cards (6 pairs)
+  if (numCards <= 16) return 'grid-cols-8';  // 8x2 for 16 cards (8 pairs)
+  if (numCards <= 20) return 'grid-cols-7';  // ~7x3 for 20 cards (10 pairs), results in 20/7 -> 3 rows
+  if (numCards <= 24) return 'grid-cols-8';  // 8x3 for 24 cards (12 pairs)
+  if (numCards <= 30) return 'grid-cols-10'; // 10x3 for 30 cards (15 pairs)
+  if (numCards <= 36) return 'grid-cols-9';  // 9x4 for 36 cards (18 pairs)
+  return 'grid-cols-8'; // Default, though settings should hit one of above
 };

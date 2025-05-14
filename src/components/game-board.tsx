@@ -4,21 +4,22 @@ import { useState, useEffect, useCallback } from 'react';
 import type { CardType, PlayerType, GameSettingsType } from '@/types';
 import { generateCardSet, getGridColsClass } from '@/lib/game-utils';
 import { MemoryCard } from './memory-card';
-import { PlayerScores } from './player-scores';
-import { Button } from '@/components/ui/button';
+// PlayerScores is no longer rendered here
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { PartyPopper } from 'lucide-react'; // Changed from Confetti to PartyPopper
+import { PartyPopper } from 'lucide-react';
 
 interface GameBoardProps {
   settings: GameSettingsType;
+  players: PlayerType[]; // Received as prop
+  currentPlayerId: number; // Received as prop
+  onPlayerScored: (playerId: number) => void; // Callback to update score
+  onNextPlayerTurn: () => void; // Callback to change turn
   onPlayAgain: () => void;
 }
 
-export function GameBoard({ settings, onPlayAgain }: GameBoardProps) {
+export function GameBoard({ settings, players, currentPlayerId, onPlayerScored, onNextPlayerTurn, onPlayAgain }: GameBoardProps) {
   const [cards, setCards] = useState<CardType[]>([]);
-  const [players, setPlayers] = useState<PlayerType[]>([]);
-  const [currentPlayerId, setCurrentPlayerId] = useState<number>(1);
   const [flippedCards, setFlippedCards] = useState<CardType[]>([]);
   const [isChecking, setIsChecking] = useState<boolean>(false);
   const [gameStatus, setGameStatus] = useState<'playing' | 'finished'>('playing');
@@ -28,22 +29,15 @@ export function GameBoard({ settings, onPlayAgain }: GameBoardProps) {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Initialize game
+    // Initialize game cards
     setCards(generateCardSet(settings.numPairs));
-    const initialPlayers = Array.from({ length: settings.numPlayers }, (_, i) => ({
-      id: i + 1,
-      name: `Player ${i + 1}`,
-      score: 0,
-    }));
-    setPlayers(initialPlayers);
-    setCurrentPlayerId(1);
+    // Player initialization and initial toast are now handled in page.tsx
     setFlippedCards([]);
     setIsChecking(false);
     setGameStatus('playing');
     setWinner(null);
     setShowWinDialog(false);
-    toast({ title: `Game Started!`, description: `Player 1's turn.` });
-  }, [settings, toast]);
+  }, [settings]);
 
   const resetFlippedCards = useCallback(() => {
     setCards((prevCards) =>
@@ -69,11 +63,8 @@ export function GameBoard({ settings, onPlayAgain }: GameBoardProps) {
             card.pairId === firstCard.pairId ? { ...card, isMatched: true, isFlipped: true } : card
           )
         );
-        setPlayers((prevPlayers) =>
-          prevPlayers.map((player) =>
-            player.id === currentPlayerId ? { ...player, score: player.score + 1 } : player
-          )
-        );
+        onPlayerScored(currentPlayerId); // Call prop to update score
+        
         toast({
           title: "Match Found!",
           description: `${players.find(p=>p.id === currentPlayerId)?.name || 'Current player'} scored a point!`,
@@ -82,7 +73,6 @@ export function GameBoard({ settings, onPlayAgain }: GameBoardProps) {
         setFlippedCards([]);
         setIsChecking(false);
         
-        // Check for game end after state updates
       } else {
         // No match
         toast({
@@ -92,16 +82,11 @@ export function GameBoard({ settings, onPlayAgain }: GameBoardProps) {
         });
         setTimeout(() => {
           resetFlippedCards();
-          setCurrentPlayerId((prevId) => (prevId % settings.numPlayers) + 1);
-          setTimeout(() => { // ensure player change is announced after cards flip back
-            toast({
-              title: `Player ${ (currentPlayerId % settings.numPlayers) + 1}'s Turn`
-            });
-          }, 100);
-        }, 1200); // Delay to show cards before flipping back
+          onNextPlayerTurn(); // Call prop to change turn (and trigger toast in page.tsx)
+        }, 1200); 
       }
     }
-  }, [flippedCards, currentPlayerId, settings.numPlayers, resetFlippedCards, toast, players]);
+  }, [flippedCards, currentPlayerId, onPlayerScored, onNextPlayerTurn, resetFlippedCards, toast, players]);
   
   useEffect(() => {
     if (flippedCards.length === 2) {
@@ -110,11 +95,11 @@ export function GameBoard({ settings, onPlayAgain }: GameBoardProps) {
   }, [flippedCards, checkForMatch]);
 
   useEffect(() => {
-    if (cards.length > 0 && cards.every(card => card.isMatched)) {
+    if (cards.length > 0 && players.length > 0 && cards.every(card => card.isMatched)) {
       setGameStatus('finished');
       const maxScore = Math.max(...players.map(p => p.score));
       const winners = players.filter(p => p.score === maxScore);
-      setWinner(winners.length === 1 ? winners[0] : winners); // Handle single or multiple winners (tie)
+      setWinner(winners.length === 1 ? winners[0] : winners); 
       setShowWinDialog(true);
     }
   }, [cards, players]);
@@ -126,9 +111,7 @@ export function GameBoard({ settings, onPlayAgain }: GameBoardProps) {
     const clickedCard = cards.find((card) => card.id === cardId);
     if (!clickedCard || clickedCard.isFlipped || clickedCard.isMatched) return;
 
-    // Prevent clicking the same card twice in a turn for single card selection
     if (flippedCards.length === 1 && flippedCards[0].id === cardId) return;
-
 
     setCards((prevCards) =>
       prevCards.map((card) =>
@@ -140,15 +123,15 @@ export function GameBoard({ settings, onPlayAgain }: GameBoardProps) {
 
   const gridColsClass = getGridColsClass(cards.length);
 
-  if (!cards.length || !players.length) {
-    return <p className="text-xl">Loading game...</p>;
+  if (!cards.length) { // players.length check removed as it's managed by page.tsx
+    return <p className="text-xl text-center">Loading game cards...</p>;
   }
 
   return (
     <div className="w-full flex flex-col items-center">
-      <PlayerScores players={players} currentPlayerId={currentPlayerId} />
+      {/* PlayerScores component is now rendered in page.tsx */}
       
-      <div className={`card-grid ${gridColsClass} w-full max-w-3xl mb-8`}>
+      <div className={`card-grid ${gridColsClass} w-full max-w-4xl mb-8`}> {/* max-w increased slightly */}
         {cards.map((card) => (
           <MemoryCard
             key={card.id}

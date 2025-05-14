@@ -1,22 +1,59 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GameSetup } from '@/components/game-setup';
 import { GameBoard } from '@/components/game-board';
-import type { GameSettingsType } from '@/types';
-import { Button } from '@/components/ui/button'; // For a potential global reset button, not used yet
+import { PlayerScores } from '@/components/player-scores';
+import type { GameSettingsType, PlayerType } from '@/types';
 import { Gamepad2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function MatchUpMemoryPage() {
   const [gameSettings, setGameSettings] = useState<GameSettingsType | null>(null);
+  const [players, setPlayers] = useState<PlayerType[]>([]);
+  const [currentPlayerId, setCurrentPlayerId] = useState<number>(1);
+  const { toast } = useToast();
+
+  const initializeGameStates = useCallback((settings: GameSettingsType) => {
+    const initialPlayers = Array.from({ length: settings.numPlayers }, (_, i) => ({
+      id: i + 1,
+      name: `Player ${i + 1}`,
+      score: 0,
+    }));
+    setPlayers(initialPlayers);
+    setCurrentPlayerId(1);
+    toast({ title: `Game Started!`, description: `Player 1's turn.` });
+  }, [toast]);
 
   const handleStartGame = (settings: GameSettingsType) => {
     setGameSettings(settings);
+    initializeGameStates(settings);
   };
 
   const handlePlayAgain = () => {
-    setGameSettings(null); // This will re-render GameSetup
+    setGameSettings(null); 
+    setPlayers([]);
+    setCurrentPlayerId(1);
   };
+
+  const handlePlayerScored = useCallback((playerId: number) => {
+    setPlayers((prevPlayers) =>
+      prevPlayers.map((player) =>
+        player.id === playerId ? { ...player, score: player.score + 1 } : player
+      )
+    );
+    // Toast for scoring is handled within GameBoard for immediate feedback
+  }, []);
+
+  const handleNextPlayerTurn = useCallback(() => {
+    if (!gameSettings) return;
+    const nextPlayer = (currentPlayerId % gameSettings.numPlayers) + 1;
+    setCurrentPlayerId(nextPlayer);
+    toast({
+      title: `Player ${nextPlayer}'s Turn`
+    });
+  }, [currentPlayerId, gameSettings, toast]);
+
 
   return (
     <div className="container mx-auto px-2 py-4 md:px-4 md:py-8 flex flex-col items-center min-h-screen">
@@ -30,11 +67,25 @@ export default function MatchUpMemoryPage() {
         </div>
       </header>
 
-      <main className="w-full flex flex-col items-center">
+      <main className="w-full flex flex-col items-center flex-grow">
         {!gameSettings ? (
           <GameSetup onStartGame={handleStartGame} />
         ) : (
-          <GameBoard settings={gameSettings} onPlayAgain={handlePlayAgain} />
+          <div className="w-full flex flex-col md:flex-row gap-4 lg:gap-6">
+            <aside className="w-full md:w-64 lg:w-72 md:sticky md:top-24 self-start"> {/* Adjusted width and sticky positioning */}
+              <PlayerScores players={players} currentPlayerId={currentPlayerId} />
+            </aside>
+            <section className="flex-grow">
+              <GameBoard
+                settings={gameSettings}
+                players={players}
+                currentPlayerId={currentPlayerId}
+                onPlayerScored={handlePlayerScored}
+                onNextPlayerTurn={handleNextPlayerTurn}
+                onPlayAgain={handlePlayAgain}
+              />
+            </section>
+          </div>
         )}
       </main>
 
