@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -6,7 +7,8 @@ import { generateCardSet, getGridColsClass } from '@/lib/game-utils';
 import { MemoryCard } from './memory-card';
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { PartyPopper } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PartyPopper, RotateCcw } from 'lucide-react';
 
 interface GameBoardProps {
   settings: GameSettingsType;
@@ -135,6 +137,12 @@ export function GameBoard({ settings, players, currentPlayerId, onPlayerScored, 
         ))}
       </div>
 
+      {gameStatus === 'playing' && (
+        <Button onClick={onPlayAgain} variant="outline" className="mb-8">
+          <RotateCcw className="mr-2 h-4 w-4" /> New Game / Settings
+        </Button>
+      )}
+
       {gameStatus === 'finished' && showWinDialog && (
          <AlertDialog open={showWinDialog} onOpenChange={setShowWinDialog}>
             <AlertDialogContent>
@@ -161,3 +169,4 @@ export function GameBoard({ settings, players, currentPlayerId, onPlayerScored, 
     </div>
   );
 }
+
