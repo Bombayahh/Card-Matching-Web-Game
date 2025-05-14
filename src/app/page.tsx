@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -14,10 +15,14 @@ export default function MatchUpMemoryPage() {
   const [currentPlayerId, setCurrentPlayerId] = useState<number>(1);
   const { toast } = useToast();
 
+  // State to store the last used game settings for persistence
+  const [lastNumPlayers, setLastNumPlayers] = useState<number>(1);
+  const [lastPlayerNames, setLastPlayerNames] = useState<string[]>(['Player 1']);
+
   const initializeGameStates = useCallback((settings: GameSettingsType) => {
     const initialPlayers = Array.from({ length: settings.numPlayers }, (_, i) => ({
       id: i + 1,
-      name: settings.playerNames[i] || `Player ${i + 1}`, // Use provided names
+      name: settings.playerNames[i] || `Player ${i + 1}`,
       score: 0,
     }));
     setPlayers(initialPlayers);
@@ -28,12 +33,16 @@ export default function MatchUpMemoryPage() {
   const handleStartGame = (settings: GameSettingsType) => {
     setGameSettings(settings);
     initializeGameStates(settings);
+    // Persist these settings for the next time GameSetup is shown
+    setLastNumPlayers(settings.numPlayers);
+    setLastPlayerNames(settings.playerNames);
   };
 
   const handlePlayAgain = () => {
     setGameSettings(null); 
     setPlayers([]);
     setCurrentPlayerId(1);
+    // Player names and num players for the setup screen will be taken from lastPlayerNames and lastNumPlayers
   };
 
   const handlePlayerScored = useCallback((playerId: number) => {
@@ -42,7 +51,6 @@ export default function MatchUpMemoryPage() {
         player.id === playerId ? { ...player, score: player.score + 1 } : player
       )
     );
-    // Toast for scoring is handled within GameBoard for immediate feedback
   }, []);
 
   const handleNextPlayerTurn = useCallback(() => {
@@ -70,7 +78,11 @@ export default function MatchUpMemoryPage() {
 
       <main className="w-full flex flex-col items-center flex-grow">
         {!gameSettings ? (
-          <GameSetup onStartGame={handleStartGame} />
+          <GameSetup 
+            onStartGame={handleStartGame} 
+            initialNumPlayers={lastNumPlayers}
+            initialPlayerNames={lastPlayerNames}
+          />
         ) : (
           <div className="w-full flex flex-col md:flex-row gap-4 lg:gap-6">
             <aside className="w-full md:w-48 lg:w-56 md:sticky md:top-24 self-start">

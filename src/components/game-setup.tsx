@@ -19,6 +19,8 @@ import { Separator } from '@/components/ui/separator';
 
 interface GameSetupProps {
   onStartGame: (settings: GameSettingsType) => void;
+  initialNumPlayers?: number;
+  initialPlayerNames?: string[];
 }
 
 const playerOptions = [1, 2, 3, 4];
@@ -36,13 +38,24 @@ const pairOptions = [
 ];
 
 
-export function GameSetup({ onStartGame }: GameSetupProps) {
-  const [numPlayers, setNumPlayers] = useState<number>(1);
-  const [numPairs, setNumPairs] = useState<number>(8);
-  const [playerNames, setPlayerNames] = useState<string[]>(['Player 1']);
+export function GameSetup({ onStartGame, initialNumPlayers, initialPlayerNames }: GameSetupProps) {
+  const [numPlayers, setNumPlayers] = useState<number>(initialNumPlayers || 1);
+  const [numPairs, setNumPairs] = useState<number>(8); // Default numPairs, can also be persisted if needed
+  
+  const [playerNames, setPlayerNames] = useState<string[]>(() => {
+    const count = initialNumPlayers || 1;
+    const names: string[] = [];
+    for (let i = 0; i < count; i++) {
+      names.push((initialPlayerNames && initialPlayerNames[i]) || `Player ${i + 1}`);
+    }
+    return names;
+  });
+  
   const { toast } = useToast();
 
   useEffect(() => {
+    // This effect updates playerNames array when numPlayers changes,
+    // preserving existing names where possible.
     setPlayerNames((prevNames) => {
       const newNames = Array.from({ length: numPlayers }, (_, i) => prevNames[i] || `Player ${i + 1}`);
       return newNames;
@@ -71,19 +84,26 @@ export function GameSetup({ onStartGame }: GameSetupProps) {
         toast({ title: "Invalid player name", description: "Player names cannot be empty.", variant: "destructive" });
         return;
     }
-    onStartGame({ numPlayers, numPairs, playerNames });
+    // Ensure playerNames array matches numPlayers before submitting
+    const finalPlayerNames = playerNames.slice(0, numPlayers);
+    if (finalPlayerNames.length < numPlayers) {
+        for (let i = finalPlayerNames.length; i < numPlayers; i++) {
+            finalPlayerNames.push(`Player ${i + 1}`);
+        }
+    }
+
+    onStartGame({ numPlayers, numPairs, playerNames: finalPlayerNames });
   };
 
   return (
-    <Card className="w-full max-w-2xl shadow-xl"> {/* Increased max-width for side panel */}
+    <Card className="w-full max-w-2xl shadow-xl">
       <CardHeader>
         <CardTitle className="text-3xl text-center">Game Setup</CardTitle>
         <CardDescription className="text-center">Customize your game!</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-0"> {/* Removed default space-y, will use flex gap */}
+        <CardContent className="space-y-0">
           <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-            {/* Main Settings Panel */}
             <div className="flex-1 space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="numPlayers" className="text-lg">Number of Players</Label>
@@ -124,15 +144,11 @@ export function GameSetup({ onStartGame }: GameSetupProps) {
               </div>
             </div>
 
-            {/* Vertical Separator for md screens and up */}
             <Separator orientation="vertical" className="hidden md:block h-auto" />
-            {/* Horizontal Separator for sm screens */}
             <Separator orientation="horizontal" className="block md:hidden" />
 
-
-            {/* Player Names Side Panel */}
             {numPlayers > 0 && (
-              <div className="md:w-64 space-y-4 flex-shrink-0"> {/* Fixed width for side panel on medium screens */}
+              <div className="md:w-64 space-y-4 flex-shrink-0">
                 <h3 className="text-lg font-medium text-center md:text-left">Player Names</h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
                     {Array.from({ length: numPlayers }).map((_, index) => (
@@ -153,7 +169,7 @@ export function GameSetup({ onStartGame }: GameSetupProps) {
             )}
           </div>
         </CardContent>
-        <CardFooter className="pt-6"> {/* Add padding-top to footer */}
+        <CardFooter className="pt-6">
           <Button type="submit" className="w-full text-lg py-6">
             Start Game
           </Button>
